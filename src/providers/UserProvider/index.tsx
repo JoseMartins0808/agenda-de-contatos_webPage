@@ -52,7 +52,6 @@ export const UserProvider = ({ children }: iUserProviderProps) => {
 
     async function createUser(payload: any) {
         const data = rectifyCreateUserData(payload);
-        console.log(data);
         try {
             await application.post('users', data)
                 .then((response) => {

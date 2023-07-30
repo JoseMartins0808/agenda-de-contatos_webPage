@@ -42,12 +42,6 @@ export default function RegisterForm() {
         hidePassword,
         passIcon } = useContext(UserContext);
 
-    // const [registerButton, deactivateRegisterButton] = useState<boolean>(false); para adicionar na lógica de cadastro
-
-
-
-
-
     return (
         <form onSubmit={handleSubmit(createUser)}>
             <Input label={'Nome de cadastro'} placeholder={'digite seu nome cadastral'}
