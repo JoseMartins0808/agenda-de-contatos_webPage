@@ -25,17 +25,25 @@ interface iDashboardProviderProps {
 
 export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
 
+
     const [token, setToken] = useState<string>('');
     const [userData, setUserData] = useState({});
     const [userContacts, setUserContacts] = useState([]);
-    const userToken = JSON.parse(localStorage.getItem('@agendaDeContatos:token'));
-    const userId = JSON.parse(localStorage.getItem('@agendaDeContatos:userId'));
+    let userToken = '';
+    let userId = '';
     const [loading, setLoading] = useState(true);
     const [loadingContacts, setLoadingContacts] = useState(true);
+
+    if (typeof window !== 'undefined') {
+        userToken = JSON.parse(localStorage.getItem('@agendaDeContatos:token'));
+        userId = JSON.parse(localStorage.getItem('@agendaDeContatos:userId'));
+    };
 
     useEffect(() => {
         getUserData();
         getContactsData();
+        userToken = JSON.parse(localStorage.getItem('@agendaDeContatos:token'));
+        userId = JSON.parse(localStorage.getItem('@agendaDeContatos:userId'));
     }, [])
 
     async function getUserData() {
