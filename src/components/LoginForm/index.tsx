@@ -43,7 +43,8 @@ export default function LoginForm() {
                 .then((response) => {
                     console.log(response.data);
                     toast.success('Login realizado com sucesso! Redirecionando...');
-                    localStorage.setItem('@agendaDeContatosToken', JSON.stringify(response.data.token));
+                    localStorage.setItem('@agendaDeContatos:token', JSON.stringify(response.data.token));
+                    localStorage.setItem('@agendaDeContatos:userId', JSON.stringify(response.data.user.id));
                     setTimeout(() => {
                         navigate.push('/dashboard');
                     }, 3100);

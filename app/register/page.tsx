@@ -5,11 +5,11 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 
-export default function DashboardPage() {
+export default function RegisterPage() {
     return (
         <main>
             <h1 className={styles.dash}>Veja como cadastrar na Agenda rapi 10 é fácil!</h1>
             <RegisterForm></RegisterForm>
         </main>
     )
-}
+};
