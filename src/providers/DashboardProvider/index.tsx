@@ -5,9 +5,8 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
 interface iDashboardContextProps {
-    token: string;
-    setToken: Dispatch<SetStateAction<string>>;
     getUserData: () => void;
+    getContactsData: () => void;
     userData: any;
     setUserData: Dispatch<SetStateAction<{}>>;
     userContacts: any;
@@ -26,7 +25,6 @@ interface iDashboardProviderProps {
 export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
 
 
-    const [token, setToken] = useState<string>('');
     const [userData, setUserData] = useState({});
     const [userContacts, setUserContacts] = useState([]);
     let userToken = '';
@@ -40,11 +38,9 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
     };
 
     useEffect(() => {
-        getUserData();
-        getContactsData();
         userToken = JSON.parse(localStorage.getItem('@agendaDeContatos:token'));
         userId = JSON.parse(localStorage.getItem('@agendaDeContatos:userId'));
-    }, [])
+    }, []);
 
     async function getUserData() {
         await application.get(`users/${userId}`, { headers: { Authorization: 'Bearer ' + userToken } })
@@ -65,14 +61,18 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
     async function deleteContact(contactId: string) {
         const newContactsArray = userContacts.filter((contact) => contactId !== contact.id);
         setUserContacts(newContactsArray);
+
+        await application.delete(`contacts/${contactId}`, { headers: { Authorization: 'Bearer ' + userToken } })
+            .then(() => {
+                toast.success('Contato removido com sucesso!')
+            }).catch((error) => console.log(error));
     };
 
 
     return (
         <DashboardContext.Provider value={{
-            token,
-            setToken,
             getUserData,
+            getContactsData,
             userData,
             setUserData,
             userContacts,

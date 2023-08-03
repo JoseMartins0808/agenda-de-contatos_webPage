@@ -5,11 +5,12 @@ import { z } from 'zod';
 import Input from '../Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash, faEye, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { application } from '../../services/api';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DashboardContext } from '../../providers/DashboardProvider';
 
 const loginFormSchema = z.object({
     username: z.string().min(1, 'Informe seu nome cadastral'),
@@ -26,6 +27,7 @@ export default function LoginForm() {
     const [passIcon, setPassIcon] = useState(faEye);
     const { register, handleSubmit, formState: { errors } } = useForm<tLoginForm>({ resolver: zodResolver(loginFormSchema) });
     const navigate = useRouter();
+    const { getUserData, getContactsData } = useContext(DashboardContext);
 
     function passIconToggle() {
         if (hidePassword === 'password') {
@@ -41,15 +43,17 @@ export default function LoginForm() {
         try {
             await application.post('login', payload)
                 .then((response) => {
-                    console.log(response.data);
                     toast.success('Login realizado com sucesso! Redirecionando...');
                     localStorage.setItem('@agendaDeContatos:token', JSON.stringify(response.data.token));
                     localStorage.setItem('@agendaDeContatos:userId', JSON.stringify(response.data.user.id));
+                    getUserData();
+                    getContactsData();
                     setTimeout(() => {
                         navigate.push('/dashboard');
-                    }, 3100);
+                    }, 2000);
                 })
         } catch (error) {
+            console.log(error);
             toast.error('Verifique seu nome cadastral e senha');
         };
     };

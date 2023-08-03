@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '../Input';
 import { useContext, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
-
+import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserContext } from '../../providers/UserProvider';
 
