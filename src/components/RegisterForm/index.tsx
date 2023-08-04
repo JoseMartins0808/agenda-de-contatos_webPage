@@ -1,5 +1,5 @@
 'use client';
-import { z, } from 'zod';
+import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '../Input';
@@ -23,12 +23,13 @@ const registerFormSchema = z.object({
     confirmPassword: z.string().min(1, 'Confirme sua senha'),
     email: z.string().min(1, 'Informe seu e-mail').email({ message: 'Insira um email válido' }),
     second_email: z.string().optional(),
-    phone: z.string().length(11, 'Telefone inválido. Somente números (xx-xxxxx-xxxx)'),
+    phone: z.string().max(11, 'Telefone inválido. Somente números (xx-xxxxx-xxxx)'),
     second_phone: z.string().optional()
 }).refine((payload) => payload.password === payload.confirmPassword, {
     message: 'A confirmação deve ser idêntica à senha informada',
     path: ['confirmPassword']
 });
+
 
 type tRegisterForm = z.infer<typeof registerFormSchema>;
 
@@ -71,11 +72,11 @@ export default function RegisterForm() {
                 error={errors.second_email?.message}
             />
             <Input label={'Telefone'} placeholder={'digite seu telefone'}
-                type={'text'} {...register('phone')}
+                type={'text'} {...register('phone')} maxLength={11}
                 error={errors.phone?.message}
             />
             <Input label={'Telefone opcional'} placeholder={'caso queira, digite seu telefone opcional'}
-                type={'text'} {...register('second_phone')}
+                type={'text'} {...register('second_phone')} maxLength={11}
                 error={errors.second_phone?.message}
             />
             <button type='submit' disabled={false} >Cadastrar</button>                       {/*registerButton*/}

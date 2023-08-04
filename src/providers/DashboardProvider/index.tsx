@@ -14,6 +14,7 @@ interface iDashboardContextProps {
     loading: boolean;
     loadingContacts: boolean;
     deleteContact: (contactId: string) => void;
+    updateUser: (userId: string, data: any) => void;
 };
 
 export const DashboardContext = createContext({} as iDashboardContextProps);
@@ -25,7 +26,7 @@ interface iDashboardProviderProps {
 export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
 
 
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState<any>({});
     const [userContacts, setUserContacts] = useState([]);
     let userToken = '';
     let userId = '';
@@ -68,6 +69,54 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
             }).catch((error) => console.log(error));
     };
 
+    function rectifyUpdateData(payload) {
+        let updateUserData = {
+            username: '',
+            full_name: '',
+            password: '',
+            phones: [],
+            emails: []
+        };
+
+        if (payload.email || payload.second_email) {
+            if (payload.email) { updateUserData.emails.push(payload.email) };
+            if (payload.second_email) { updateUserData.emails.push(payload.second_email) };
+        } else {
+            updateUserData.emails.push(userData.emails[0].email);
+        };
+
+        if (payload.phone || payload.second_phone) {
+            if (payload.phone) { updateUserData.phones.push(payload.phone) };
+            if (payload.second_phone) { updateUserData.phones.push(payload.second_phone) };
+        } else {
+            updateUserData.phones.push(userData.phones[0].phone);
+        };
+
+        if (!payload.username) { delete updateUserData.username }
+        else { updateUserData.username = payload.username };
+
+        if (!payload.full_name) { delete updateUserData.full_name }
+        else { updateUserData.full_name = payload.full_name };
+
+        if (!payload.password) { delete updateUserData.password }
+        else { updateUserData.password = payload.password };
+
+        return updateUserData;
+    };
+
+    async function updateUser(data: any) {
+
+        data = rectifyUpdateData(data);
+
+        if (Object.keys(data).length === 0) return toast.error('Nada foi atualizado.');
+
+        await application.patch(`users/${userId}`, data, { headers: { Authorization: 'Bearer ' + userToken } })
+            .then((response) => {
+                setUserData(response.data);
+                toast.success('Cadastro atualizado!')
+            }).catch((error) => toast.error('Algo deu errado. Por favor, tente novamente'));
+    };
+
 
     return (
         <DashboardContext.Provider value={{
@@ -79,7 +128,8 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
             setUserContacts,
             loading,
             loadingContacts,
-            deleteContact
+            deleteContact,
+            updateUser
         }}>
             {children}
         </DashboardContext.Provider>

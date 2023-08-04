@@ -4,11 +4,14 @@ import { DashboardContext } from '../../src/providers/DashboardProvider';
 import ContactsMain from '../../src/components/ContactsMain';
 import CreateContactMain from '../../src/components/CreateContactMain';
 import { useRouter } from 'next/navigation';
+import ManageAccountMain from '../../src/components/ManageAccountMain';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify'
 
 export default function DashboardPage() {
 
     const { getUserData, getContactsData, userData, setUserData, setUserContacts, loading, loadingContacts, deleteContact,
-        userContacts } = useContext(DashboardContext);
+        userContacts, updateUser } = useContext(DashboardContext);
 
     const [main, setMain] = useState('contacts');
     const navigate = useRouter();
@@ -22,7 +25,7 @@ export default function DashboardPage() {
         if (main === 'contacts') {
             return <ContactsMain contactsData={userContacts} deleteContact={deleteContact} setMain={setMain} />;
         } else if (main === 'manage') {
-            return <p>gerenciar Perfil</p>
+            return <ManageAccountMain userData={userData} updateUser={updateUser} />
         } else if (main === 'create') {
             return <CreateContactMain />
         };
@@ -54,6 +57,7 @@ export default function DashboardPage() {
                 </div>
             </header>
             {loadingContacts ? <p>carregando</p> : renderOptionalMain()}
+            <ToastContainer autoClose={1500} theme='dark' />
         </>
     );
 }
