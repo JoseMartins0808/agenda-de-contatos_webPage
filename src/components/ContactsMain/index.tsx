@@ -9,11 +9,8 @@ export default function ContactsMain({ contactsData, deleteContact, setMain }) {
     const [modal, setModal] = useState(false);
     const [contactId, setContactId] = useState(null);
 
-    console.log(contactId);
-
     function contactToUpdate() {
         const contactFound = contactsData.filter((contact) => contact.id === contactId);
-        console.log(contactFound)
         return contactFound;
     }
 
@@ -55,7 +52,7 @@ export default function ContactsMain({ contactsData, deleteContact, setMain }) {
                     ))}
                 </ul>
             )}
-            {modal && <UpdateContactModal contact={contactToUpdate()} setModal={setModal} />}
+            {modal && <UpdateContactModal contact={contactToUpdate()} setModal={setModal} allContacts={contactsData} />}
             <ToastContainer theme="dark" autoClose={1500} />
         </main>
     )

@@ -77,9 +77,11 @@ export default function CreateContactMain() {
                 <Input label={'Nome do contato'} placeholder={'digite o nome do contato'}
                     type={'text'} {...register('full_name')} error={errors.full_name?.message} />
                 <Input label={'Telefone do contato'} placeholder={'digite o telefone do contato'}
-                    type={'text'} {...register('phone')} error={errors.phone?.message} />
+                    type={'text'} {...register('phone')} maxLength={11}
+                    error={errors.phone?.message} />
                 <Input label={'Telefone Opcional'} placeholder={'digite o telefone opcional'}
-                    type={'text'} {...register('second_phone')} error={errors.second_phone?.message} />
+                    type={'text'} {...register('second_phone')} maxLength={11}
+                    error={errors.second_phone?.message} />
                 <Input label={'Email do contato'} placeholder={'digite o email do contato'}
                     type={'text'} {...register('email')} error={errors.email?.message} />
                 <Input label={'Email opcional'} placeholder={'digite o email opcional'}

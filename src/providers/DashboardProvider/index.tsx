@@ -15,6 +15,7 @@ interface iDashboardContextProps {
     loadingContacts: boolean;
     deleteContact: (contactId: string) => void;
     updateUser: (userId: string, data: any) => void;
+    updateContact: (data: any, contactId: string, newArray: any[]) => void;
 };
 
 export const DashboardContext = createContext({} as iDashboardContextProps);
@@ -32,6 +33,7 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
     let userId = '';
     const [loading, setLoading] = useState(true);
     const [loadingContacts, setLoadingContacts] = useState(true);
+    const navigate = useRouter();
 
     if (typeof window !== 'undefined') {
         userToken = JSON.parse(localStorage.getItem('@agendaDeContatos:token'));
@@ -48,7 +50,11 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
             .then((response) => {
                 setUserData(response.data);
                 setLoading(false);
-            }).catch((error) => console.log(error))
+            }).catch((error) => {
+                console.log(error);
+                toast.error('Sessão expirada. Favor efetuar novamente o login.');
+                navigate.push('/');
+            })
     };
 
     async function getContactsData() {
@@ -117,6 +123,18 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
             }).catch((error) => toast.error('Algo deu errado. Por favor, tente novamente'));
     };
 
+    async function updateContact(data: any, contactId: string, newArray: any[]) {
+
+        await application.patch(`contacts/${contactId}`, data, { headers: { Authorization: 'Bearer ' + userToken } })
+            .then((response) => {
+                newArray.push(response.data);
+                setUserContacts(newArray);
+                toast.success('Contato atualizado!')
+            }).catch((error) => {
+                console.log(error);
+                toast.error('Algo deu errado. Tente novamente.');
+            });
+    };
 
     return (
         <DashboardContext.Provider value={{
@@ -129,7 +147,8 @@ export const DashboardProvider = ({ children }: iDashboardProviderProps) => {
             loading,
             loadingContacts,
             deleteContact,
-            updateUser
+            updateUser,
+            updateContact
         }}>
             {children}
         </DashboardContext.Provider>
